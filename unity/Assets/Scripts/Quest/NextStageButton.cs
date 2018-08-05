@@ -21,10 +21,13 @@ public class NextStageButton
 
     public void Update()
     {
+        if (Game.Get().quest.questHasEnded)
+            return;
+
         // Clean up everything marked as 'uiphase'
         foreach (GameObject go in GameObject.FindGameObjectsWithTag(Game.UIPHASE))
             Object.Destroy(go);
-
+                
         Color bgColor = new Color(0.05f, 0, 0, 0.9f);
         StringKey phase;
         if (Game.Get().quest.phase == Quest.MoMPhase.horror)
@@ -136,7 +139,12 @@ public class NextStageButton
         {
             return;
         }
-        new LogWindow();
+        //new LogWindow();
+        StatsManager stats = new StatsManager();
+        stats.PrepareStats(true, 8, "comments");
+        stats.PublishData();
+
+
     }
 
     public void Set()

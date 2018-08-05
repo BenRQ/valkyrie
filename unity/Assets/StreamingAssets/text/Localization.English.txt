@@ -440,3 +440,12 @@ ATTACK_WITH_SPELL, Attack with a Spell
 ATTACK_WITH_UNARMED, Attack Unarmed
 
 ACTION_X, {0}
+
+STATS_WELCOME,Thank you for playing. Please answer the following questions to give your opinion and help the author to improve the scenario.
+STATS_ASK_VICTORY,Did you win this game?
+STATS_ASK_VICTORY_YES,YES!
+STATS_ASK_VICTORY_NO,No...
+STATS_ASK_RATING,How much did you like this scenario\n(1: awful  10: amazing)
+STATS_ASK_COMMENTS,Would you like to leave a comment for the scenario author?
+STATS_SEND_BUTTON,Send
+STATS_MENU_BUTTON,Menu

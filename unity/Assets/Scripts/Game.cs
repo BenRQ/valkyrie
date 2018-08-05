@@ -20,6 +20,7 @@ public class Game : MonoBehaviour {
     public static readonly string DIALOG = "dialog";
     public static readonly string ACTIVATION = "activation";
     public static readonly string SHOP = "shop";
+    public static readonly string ENDGAME = "endgame";
 
     // This is populated at run time from the text asset
     public string version = "";
