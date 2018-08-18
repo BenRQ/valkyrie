@@ -139,12 +139,7 @@ public class NextStageButton
         {
             return;
         }
-        //new LogWindow();
-        StatsManager stats = new StatsManager();
-        stats.PrepareStats(true, 8, "comments");
-        stats.PublishData();
-
-
+        new LogWindow();
     }
 
     public void Set()

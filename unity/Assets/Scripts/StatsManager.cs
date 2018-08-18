@@ -28,8 +28,8 @@ class PublishedGameStats
      */
 
     public string scenario_name="";
-    public int victory = 0;
-    public int rating = 0;
+    public string victory = "";
+    public string rating = "";
     public string comments = "";
     public int duration = 0;
     public int players_count = 0;
@@ -41,8 +41,8 @@ class PublishedGameStats
     public void Reset()
     {
         scenario_name = "";
-        victory = 0;
-        rating = 0;
+        victory = "";
+        rating = "";
         comments = "";
         duration = 0;
         players_count = 0;
@@ -121,16 +121,18 @@ class StatsManager
     private StringKey QUEST_NAME = new StringKey("val", "game.quest");
 
 
-    public void PrepareStats(bool victory, int rating, string comments)
+    public void PrepareStats(string victory, int rating, string comments)
     {
         if (gameStats==null) gameStats = new PublishedGameStats();
 
         gameStats.Reset();
 
-        if(victory) gameStats.victory = 1;
-        else gameStats.victory = 0;
+        gameStats.victory = victory;
 
-        gameStats.rating = rating;
+        if (rating == 0)
+            gameStats.rating = "not set";
+        else
+            gameStats.rating = rating.ToString();
 
         gameStats.comments = comments;
 
@@ -169,8 +171,8 @@ class StatsManager
         // max cell size of Google sheet is 50k characters
         if (gameStats.events_list.Length > 50000)
         {
-            gameStats.events_list.Remove( 78 + (gameStats.events_list.Length - 50000), 50000);
-            gameStats.events_list = "---Beginning of event list was cut to avoid exceeding google sheet max size---" + gameStats.events_list;
+            gameStats.events_list.Remove( 88 + (gameStats.events_list.Length - 50000), 50000);
+            gameStats.events_list = "---Beginning of event list is not included to avoid exceeding google sheet max size---" + gameStats.events_list;
         }
 
         // not available yet
@@ -186,8 +188,8 @@ class StatsManager
         GoogleFormPostman post_client = network.AddComponent<GoogleFormPostman>();
 
         post_client.AddFormField("entry.1875990408", gameStats.scenario_name);
-        post_client.AddFormField("entry.84574628",   gameStats.victory.ToString());
-        post_client.AddFormField("entry.227102998",  gameStats.rating.ToString());
+        post_client.AddFormField("entry.84574628",   gameStats.victory);
+        post_client.AddFormField("entry.227102998",  gameStats.rating);
         post_client.AddFormField("entry.2125749314", gameStats.comments);
         post_client.AddFormField("entry.170795919",  gameStats.duration.ToString());
         post_client.AddFormField("entry.376629889",  gameStats.players_count.ToString());
@@ -195,7 +197,7 @@ class StatsManager
         post_client.AddFormField("entry.2106598722", gameStats.language_selected);
         post_client.AddFormField("entry.1047979960", gameStats.events_list);
 
-        post_client.SetURL("https://docs.google.com/forms/u/1/d/e/1FAIpQLSfiFPuQOTXJI54LI-WNvn1K6qCkM5xErxJdUUJRhCZthaIqcA/formResponse");
+        post_client.SetURL("https://docs.google.com/forms/u/1/d/e/1FAIpQLSfiFPuQOTXJI54LI-WNvn1K6qCkM5xErxJdUUJRhCZthaIqcA/formResponse?hl=en");
         //post_client.SetURL("https://docs.google.com/forms/  d/e/1FAIpQLSfiFPuQOTXJI54LI-WNvn1K6qCkM5xErxJdUUJRhCZthaIqcA/formResponse");
         
         // submit:
