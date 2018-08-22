@@ -1,8 +1,5 @@
 ﻿using Assets.Scripts.Content;
-﻿using Assets.Scripts.UI.Screens;
-using System.Collections.Generic;
 using UnityEngine;
-using ValkyrieTools;
 
 namespace Assets.Scripts.UI.Screens
 {
@@ -49,14 +46,6 @@ namespace Assets.Scripts.UI.Screens
             bg.SetImage(bgTex);
             bg.SetLocation(0, 0, UIScaler.GetWidthUnits(), UIScaler.GetHeightUnits());
             
-            // Banner, to show we are out of the scenario
-            /*  UIElement ui = new UIElement(Game.ENDGAME);
-            ui.SetLocation(2, 1, UIScaler.GetWidthUnits() - 4, 3);
-            ui.SetText("Valkyrie");
-            ui.SetFont(game.gameType.GetHeaderFont());
-            ui.SetFontSize(UIScaler.GetLargeFont());
-            */
-
             // Welcome text
             UIElement ui = new UIElement(Game.ENDGAME);
             ui.SetLocation((UIScaler.GetWidthUnits() - TitleWidth) / 2, 1, TitleWidth, 4);
@@ -141,7 +130,8 @@ namespace Assets.Scripts.UI.Screens
             comments = new UIElementEditable(Game.ENDGAME);
             comments.SetLocation((UIScaler.GetWidthUnits()/2), offset+ 2, CommentsWidth, 5);
             comments.SetText(" ");
-            comments.SetTextAlignment(TextAnchor.MiddleLeft);
+            comments.SetTextAlignment(TextAnchor.UpperLeft);
+            comments.SetTextPadding(0.1f);
             comments.SetFont(game.gameType.GetFont());
             comments.SetFontSize(UIScaler.GetSmallFont());
             comments.SetBGColor(new Color(0, 0.03f, 0f));
@@ -192,10 +182,8 @@ namespace Assets.Scripts.UI.Screens
                 return;
             }
             
-            StatsManager stats = new StatsManager();
-
-            stats.PrepareStats(game_won, selected_rating, comments.GetText());
-            stats.PublishData();
+            Game.Get().stats.PrepareStats(game_won, selected_rating, comments.GetText());
+            Game.Get().stats.PublishData();
 
             // todo: manage the result / error with a callback
             Destroyer.MainMenu();

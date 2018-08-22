@@ -15,6 +15,7 @@ TagManager:
   - activation
   - shop
   - endgame
+  - bg_tasks
   layers:
   - Default
   - TransparentFX

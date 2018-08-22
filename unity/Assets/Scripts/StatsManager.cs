@@ -3,7 +3,6 @@ using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Content;
 using System.IO;
 
 /*
@@ -11,7 +10,73 @@ using System.IO;
  * 
  * Post URL: <form action="https://docs.google.com/forms/u/1/d/e/1FAIpQLSfiFPuQOTXJI54LI-WNvn1K6qCkM5xErxJdUUJRhCZthaIqcA/formResponse" target="_self" method="POST" id="mG61Hd">
  *
+ * JSON : https://drive.google.com/uc?id=1lEhwFWrryzNH6DUMbte37G1p22SyDhu9&export=download
+ * 
  */
+
+[System.Serializable]
+public class Stats_JSONobject
+{
+    public string FileGenerationDate;
+    public List<ScenarioStats> scenarios_stats;
+}
+
+[System.Serializable]
+public struct ScenarioStats
+{
+    /* We gather the following information for each scenario:
+     *    scenario_name
+     *    scenario_play_count  
+     *    scenario_avg_rating  from 1 (awful) to 1O (amazing)
+     *    scenario_avg_duration  in minutes
+     *    scenario_avg_win_ratio from 0 to 1 (in percent)
+     */
+    public string scenario_name;
+    public int scenario_play_count;
+    public float scenario_avg_rating;
+    public float scenario_avg_duration;
+    public float scenario_avg_win_ratio;
+}
+
+class DataDownloader : MonoBehaviour
+{
+
+    private Uri uri = null;
+    private Action<string,bool> callback_action;
+
+    public void download(string url, Action<string, bool> action)
+    {
+        uri = new Uri(url);
+        callback_action = action;
+
+        StartCoroutine(GetData());
+    }
+
+    private IEnumerator GetData()
+    {
+        UnityWebRequest www_get = UnityWebRequest.Get(uri);
+        yield return www_get.SendWebRequest();
+
+        if (www_get.isNetworkError)
+        {
+            // Most probably a connection error
+            callback_action("ERROR NETWORK:\n" + www_get.downloadHandler.text, true);
+            Debug.Log("Error getting stats data : most probably a connectivity issue (please check your internet connection)");
+        }
+        else if (www_get.isHttpError)
+        {
+            // Most probably a connection error
+            callback_action("ERROR HTTP:\n"+ www_get.downloadHandler.text, true);
+            Debug.Log("Error getting stats data : most probably a connection error");
+        }
+        else
+        {
+            // download OK
+            callback_action(www_get.downloadHandler.text, false);
+        }
+
+    }
+}
 
 class PublishedGameStats
 {
@@ -27,7 +92,7 @@ class PublishedGameStats
      *    List of Events activated (automatic)
      */
 
-    public string scenario_name="";
+    public string scenario_name = "";
     public string victory = "";
     public string rating = "";
     public string comments = "";
@@ -53,19 +118,6 @@ class PublishedGameStats
 
 }
 
-
-class ScenarioStats
-{
-    /* We gather the following information for each scenario:
-     *    scenario_name
-     *    scenario_play_count
-     *    scenario_avg_rating
-     *    scenario_avg_duration
-     *    scenario_avg_win_ratio 
-     */
-
-}
-
 class GoogleFormPostman : MonoBehaviour
 {
     private Uri uri = null;
@@ -75,7 +127,7 @@ class GoogleFormPostman : MonoBehaviour
     {
        if (formFields == null) formFields = new WWWForm();
 
-        Debug.Log("AddFormField"+ name+":"+value);
+        Debug.Log("INFO: stats AddFormField"+ name+":"+value);
 
         formFields.AddField(name, value);
     }
@@ -108,22 +160,33 @@ class GoogleFormPostman : MonoBehaviour
         }
         else
         {
-            Debug.Log("stats sent");
+            Debug.Log("INFO: stats sent");
             // success! thank you
         }
+
     }
 }
 
-// This class provides functions to load and save games.
-class StatsManager
+// This class provides functions to submit game stats download game stats
+public class StatsManager
 {
-    static PublishedGameStats gameStats = null;
-    private StringKey QUEST_NAME = new StringKey("val", "game.quest");
 
+    // stats for all scenario, downloaded from JSON
+    public Stats_JSONobject stats_json;
+    public Dictionary<string,ScenarioStats> scenarios_stats = null;
+
+    public bool error_download=false;
+
+    // stats for current scenario, to be submitted
+    private PublishedGameStats gameStats = null;
+    private GameObject network_post = null;
+    private GameObject network_get = null;
+    private GoogleFormPostman post_client = null;
+    private DataDownloader json_client = null;
 
     public void PrepareStats(string victory, int rating, string comments)
     {
-        if (gameStats==null) gameStats = new PublishedGameStats();
+        if (gameStats == null) gameStats = new PublishedGameStats();
 
         gameStats.Reset();
 
@@ -137,6 +200,7 @@ class StatsManager
         gameStats.comments = comments;
 
         Game game = Game.Get();
+        Quest quest = game.quest;
 
         // quest filename is the unique id
         gameStats.scenario_name = Path.GetFileName(game.quest.questPath);
@@ -145,18 +209,18 @@ class StatsManager
         gameStats.language_selected = game.currentLang;
 
         // Get number of heroes
-        foreach (Quest.Hero h in game.quest.heroes)
+        foreach (Quest.Hero h in quest.heroes)
         {
             if (h.heroData != null)
             {
                 gameStats.players_count++;
                 // remove leading 'hero' before hero name
-                gameStats.investigators_list += h.heroData.sectionName.Remove(0,4) + ";";
+                gameStats.investigators_list += h.heroData.sectionName.Remove(0, 4) + ";";
             }
         }
 
         // Get the list of events
-        if (game.quest.eventList != null)
+        if (quest.eventList != null)
         {
             foreach (string event_name in game.quest.eventList)
             {
@@ -171,7 +235,7 @@ class StatsManager
         // max cell size of Google sheet is 50k characters
         if (gameStats.events_list.Length > 50000)
         {
-            gameStats.events_list.Remove( 88 + (gameStats.events_list.Length - 50000), 50000);
+            gameStats.events_list.Remove(88 + (gameStats.events_list.Length - 50000), 50000);
             gameStats.events_list = "---Beginning of event list is not included to avoid exceeding google sheet max size---" + gameStats.events_list;
         }
 
@@ -179,13 +243,22 @@ class StatsManager
         gameStats.duration = 0;
     }
 
+
+    // send data to google forms
     public void PublishData()
     {
-        //Use WebClient Class to submit a new entry
-        GameObject network = new GameObject("StatsManager");
-        network.tag = Game.ENDGAME;
-        //network.transform.SetParent(Game.Get().uICanvas.transform);
-        GoogleFormPostman post_client = network.AddComponent<GoogleFormPostman>();
+        if (network_post == null)
+        {
+            //Use WebClient Class to submit a new entry
+            network_post = new GameObject("StatsManager");
+            network_post.tag = Game.BG_TASKS;
+        }
+
+        if (post_client==null)
+        { 
+            post_client = network_post.AddComponent<GoogleFormPostman>();
+        }
+
 
         post_client.AddFormField("entry.1875990408", gameStats.scenario_name);
         post_client.AddFormField("entry.84574628",   gameStats.victory);
@@ -198,9 +271,50 @@ class StatsManager
         post_client.AddFormField("entry.1047979960", gameStats.events_list);
 
         post_client.SetURL("https://docs.google.com/forms/u/1/d/e/1FAIpQLSfiFPuQOTXJI54LI-WNvn1K6qCkM5xErxJdUUJRhCZthaIqcA/formResponse?hl=en");
-        //post_client.SetURL("https://docs.google.com/forms/  d/e/1FAIpQLSfiFPuQOTXJI54LI-WNvn1K6qCkM5xErxJdUUJRhCZthaIqcA/formResponse");
-        
+
         // submit:
         post_client.PostFormAsync();
     }
+
+
+    // Download JSON
+    public void DownloadStats()
+    {
+        if (network_get == null)
+        {
+            //Use WebClient Class to submit a new entry
+            network_get = new GameObject("StatsManager");
+            network_get.tag = Game.BG_TASKS;
+        }
+
+        if (json_client == null)
+        {
+            json_client = network_get.AddComponent<DataDownloader>();
+        }
+
+        json_client.download("https://drive.google.com/uc?id=1lEhwFWrryzNH6DUMbte37G1p22SyDhu9&export=download", StatsDownload_callback);
+    }
+
+    private void StatsDownload_callback(string data, bool error)
+    {
+        if (error)
+        {
+            error_download = true;
+            return;
+        }
+
+        stats_json = JsonUtility.FromJson<Stats_JSONobject>(data);
+        scenarios_stats = new Dictionary<string, ScenarioStats>();
+
+        if(stats_json==null)
+            Debug.Log("ERROR: Stat file is empty\n");
+
+        foreach (ScenarioStats stats in stats_json.scenarios_stats)
+        {
+            scenarios_stats[stats.scenario_name] = stats;
+            Debug.Log("INFO:Stat filename: " + stats.scenario_name + "\n");
+        }
+
+    }
+
 }

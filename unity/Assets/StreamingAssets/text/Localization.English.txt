@@ -39,10 +39,10 @@ SNAP,Snap
 FREE,Free
 CONFIRM,Confirm
 INSPECT,Inspect
-DURATION,Duration
+DURATION,Duration:
 DESCRIPTION,Description
 AUTHORS,Authors
-DIFFICULTY,Difficulty
+DIFFICULTY,Difficulty:
 VALIDATE_SCENARIO,Validate
 FILE,File
 OPTIMIZE_LOCALIZATION,Optimize Localisation
@@ -441,7 +441,7 @@ ATTACK_WITH_UNARMED, Attack Unarmed
 
 ACTION_X, {0}
 
-STATS_WELCOME,Thank you for playing. Please answer the following questions to give your opinion and help the author improve this scenario.
+STATS_WELCOME,Thank you for playing. Please rate and share your experience for future players. Your game actions will be shared with the game author to help him improve this scenario.
 STATS_ASK_VICTORY,Did you win this game?
 STATS_ASK_VICTORY_YES,YES!
 STATS_ASK_VICTORY_NO,No...
@@ -450,3 +450,9 @@ STATS_ASK_COMMENTS,Would you like to leave a comment for the scenario author?
 STATS_MISSING_INFO,Please rate the scenario and tell us if you won before submitting. 
 STATS_SEND_BUTTON,Submit
 STATS_MENU_BUTTON,Menu
+
+STATS_AVERAGE_WIN_RATIO,Average win ratio: {0}%
+STATS_NB_USER_REVIEWS,({0} user reviews)
+STATS_AVERAGE_DURATION,Average duration: {0} min
+STATS_NO_AVERAGE_DURATION,Average duration unavailable
+STATS_NO_AVERAGE_WIN_RATIO,Average win ratio unavailable
