@@ -6,21 +6,23 @@ function StatsGenerator() {
     "scenarios_stats": []
    };
   
-  this.scenario_score_sum = {};
+  this.scenario_rating_sum = {};
   this.scenario_duration_sum = {};
   this.scenario_victory_sum = {};
   this.scenario_number_play = {};
+  this.scenario_numberof_valid_duration = {};
+  this.scenario_numberof_valid_victory = {};
   this.scenario_names = [];
 
 }
 
 //     0            1            2       3         4           5            6              7                 8                  9
-// time	  |  Scenario name | Victory |  score | Comments | duration	| NB of players | investigators | Events activated | Language selected				
+// time	  |  Scenario name | Victory | rating | Comments | duration	| NB of players | investigators | Events activated | Language selected				
 
 // Columns order in channel list sheet
 var _col_scenario_name       = 1;
 var _col_Victory             = 2;
-var _col_score               = 3;
+var _col_rating              = 3;
 var _col_duration            = 5;
 
 
@@ -50,17 +52,29 @@ StatsGenerator.prototype._parseSheet = function _parseSheet()
     {
       this.scenario_names.push( current_scenario_name );
       
-      this.scenario_score_sum[current_scenario_name] = 0;
+      this.scenario_rating_sum[current_scenario_name] = 0;
       this.scenario_duration_sum[current_scenario_name] = 0;
+      this.scenario_numberof_valid_duration[current_scenario_name] = 0;
+      this.scenario_numberof_valid_victory[current_scenario_name] = 0;
       this.scenario_victory_sum[current_scenario_name] = 0;
       this.scenario_number_play[current_scenario_name] = 0;
     }
     
     this.scenario_number_play[current_scenario_name] += 1;
     
-    this.scenario_score_sum[current_scenario_name]     += stats_data[i][_col_score];
-    this.scenario_duration_sum[current_scenario_name]  += stats_data[i][_col_duration];
-    this.scenario_victory_sum[current_scenario_name]   += stats_data[i][_col_Victory];
+    this.scenario_rating_sum[current_scenario_name] += stats_data[i][_col_rating];
+    
+    if(stats_data[i][_col_duration]!=0 && stats_data[i][_col_Victory]) 
+    {
+      this.scenario_duration_sum[current_scenario_name]  += stats_data[i][_col_duration];
+      this.scenario_numberof_valid_duration[current_scenario_name]  += 1;
+    }
+    
+    if(stats_data[i][_col_Victory]>=0) 
+    {
+      this.scenario_victory_sum[current_scenario_name] += stats_data[i][_col_Victory];
+      this.scenario_numberof_valid_victory[current_scenario_name] += 1;
+    }
     
   }
 }
@@ -73,14 +87,24 @@ StatsGenerator.prototype._prepareStats = function _prepareStats()
     var current_scenario_name = this.scenario_names[i];
     var current_scenario_number_play = this.scenario_number_play [current_scenario_name];
     
+    var avg_duration = 0;
+    if (this.scenario_numberof_valid_duration[current_scenario_name] != 0)
+      avg_duration = this.scenario_duration_sum[current_scenario_name] / this.scenario_numberof_valid_duration[current_scenario_name];
+
+    var avg_win_ration = 0;
+    if (this.scenario_numberof_valid_victory[current_scenario_name] == 0)
+      avg_win_ration = -1;
+    else
+      avg_win_ration = (this.scenario_victory_sum [current_scenario_name] / current_scenario_number_play);
+    
     if (current_scenario_number_play > 0) // should not be possible ... but just in case
     {
       this._data.scenarios_stats.push({
-        "scenario_name":         current_scenario_name,
-        "scenario_number_play":  current_scenario_number_play,
-        "scenario_avg_score":    (this.scenario_score_sum   [current_scenario_name] / current_scenario_number_play),
-        "scenario_avg_duration": (this.scenario_duration_sum[current_scenario_name] / current_scenario_number_play),
-        "scenario_avg_victory":  (this.scenario_victory_sum [current_scenario_name] / current_scenario_number_play),
+        "scenario_name":          current_scenario_name,
+        "scenario_play_count":    current_scenario_number_play,
+        "scenario_avg_rating":    (this.scenario_rating_sum  [current_scenario_name] / current_scenario_number_play),
+        "scenario_avg_duration":  avg_duration,
+        "scenario_avg_win_ratio": avg_win_ration,
       });
     }
    
