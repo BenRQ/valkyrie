@@ -16,6 +16,7 @@ TagManager:
   - shop
   - endgame
   - bg_tasks
+  - transition
   layers:
   - Default
   - TransparentFX
