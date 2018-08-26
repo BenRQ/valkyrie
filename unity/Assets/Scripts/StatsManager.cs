@@ -312,7 +312,7 @@ public class StatsManager
         foreach (ScenarioStats stats in stats_json.scenarios_stats)
         {
             scenarios_stats[stats.scenario_name] = stats;
-            Debug.Log("INFO:Stat filename: " + stats.scenario_name + "\n");
+//            Debug.Log("INFO:Stat filename: " + stats.scenario_name + "\n");
         }
 
     }

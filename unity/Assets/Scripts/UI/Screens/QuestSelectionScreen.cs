@@ -141,30 +141,35 @@ namespace Assets.Scripts.UI.Screens
 
                         //  rating
                         string symbol = "★";
+                        if (game.gameType is MoMGameType)
+                        {
+                            symbol = new StringKey("val", "ICON_TENTACLE").Translate();
+                        }
                         float rating = q_stats.scenario_avg_rating / 10;
-                        float text_width = 0;
+                        float score_text_width = 0;
 
                         ui = new UIElement(scrollArea.GetScrollTransform());
-                        ui.SetLocation(UIScaler.GetRight(-11), offset + 0.7f, 7, 2);
+
                         ui.SetText(symbol + symbol + symbol + symbol + symbol, Color.black);
+                        score_text_width = ui.GetStringWidth(symbol + symbol + symbol + symbol + symbol, (int)System.Math.Round(UIScaler.GetMediumFont() * 1.4f)) + 1;
+                        ui.SetLocation(UIScaler.GetRight(-12f), offset + 0.6f, score_text_width, 2);
                         ui.SetBGColor(Color.clear);
-                        ui.SetFontSize((int)System.Math.Round(UIScaler.GetMediumFont()*1.2f));
+                        ui.SetFontSize((int)System.Math.Round(UIScaler.GetMediumFont()*1.4f));
                         ui.SetTextAlignment(TextAnchor.MiddleLeft);
                         ui.SetButton(delegate { Selection(key); });
 
-                        text_width = UIElement.GetStringWidth(symbol + symbol + symbol + symbol + symbol, (int)System.Math.Round(UIScaler.GetMediumFont() * 1.2f));
-                        Debug.Log("text_width: " + text_width + "\n");
-
                         ui = new UIElement(scrollArea.GetScrollTransform());
-                        ui.SetLocation(UIScaler.GetRight(-11) + (rating * text_width), offset + 0.7f, (1 - rating) * text_width, 2);
+                        ui.SetLocation(UIScaler.GetRight(-12) + (rating * (score_text_width-1)), offset + 0.6f, (1 - rating) * score_text_width, 2);
                         ui.SetBGColor(new Color(1, 1, 1, 0.7f));
                         ui.SetButton(delegate { Selection(key); });
 
                         //  Number of user reviews
+                        float user_review_text_width = 0;
                         ui = new UIElement(scrollArea.GetScrollTransform());
-                        ui.SetLocation(UIScaler.GetRight(-12), offset + 2.1f, text_width+2, 1);
+                        user_review_text_width = ui.GetStringWidth(STATS_NB_USER_REVIEWS, UIScaler.GetSmallFont())+1;
                         ui.SetText(STATS_NB_USER_REVIEWS, Color.black);
-                        ui.SetTextAlignment(TextAnchor.MiddleCenter);
+                        ui.SetLocation(UIScaler.GetRight(-12) + (score_text_width/2) - (user_review_text_width/2), offset + 2.3f, user_review_text_width, 1);
+                        ui.SetTextAlignment(TextAnchor.MiddleLeft);
                         ui.SetBGColor(Color.clear);
                         ui.SetFontSize(UIScaler.GetSmallFont());
                         ui.SetButton(delegate { Selection(key); });
