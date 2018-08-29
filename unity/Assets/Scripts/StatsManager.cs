@@ -93,6 +93,7 @@ class PublishedGameStats
      */
 
     public string scenario_name = "";
+    public string quest_name = "";
     public string victory = "";
     public string rating = "";
     public string comments = "";
@@ -239,9 +240,19 @@ public class StatsManager
             gameStats.events_list = "---Beginning of event list is not included to avoid exceeding google sheet max size---" + gameStats.events_list;
         }
 
-        // not available yet
-        gameStats.duration = 0;
+        if (quest.duration>=0)
+        {
+            TimeSpan current_duration = System.DateTime.UtcNow.Subtract(quest.start_time);
+            gameStats.duration = quest.duration + (int)current_duration.TotalMinutes;
+        } else
+        {
+            gameStats.duration = 0;
+        }
+
+        gameStats.quest_name = quest.qd.quest.name.Translate();
+
     }
+
 
 
     // send data to google forms
@@ -261,6 +272,7 @@ public class StatsManager
 
 
         post_client.AddFormField("entry.1875990408", gameStats.scenario_name);
+        post_client.AddFormField("entry.989998412",  gameStats.quest_name);
         post_client.AddFormField("entry.84574628",   gameStats.victory);
         post_client.AddFormField("entry.227102998",  gameStats.rating);
         post_client.AddFormField("entry.2125749314", gameStats.comments);

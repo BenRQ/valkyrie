@@ -90,6 +90,12 @@ public class Quest
     // This is true once the first tile has been displayed
     public bool firstTileDisplayed = false;
 
+    // Quest start time (or load time)
+    public System.DateTime start_time;
+
+    // Quest gameplay duration
+    public int duration;
+
     // A list of music if custom music has been selected - used for save games
     public List<string> music = new List<string>();
 
@@ -123,6 +129,9 @@ public class Quest
         log = new List<LogEntry>();
         eventList = new List<string>();
         monsterSelect = new Dictionary<string, string>();
+
+        start_time=System.DateTime.UtcNow;
+        duration=0;
 
         GenerateItemSelection();
         GenerateMonsterSelection();
@@ -723,6 +732,14 @@ public class Quest
             eventList.Add(kv.Value);
         }
 
+        // Set start time to now
+        start_time = System.DateTime.UtcNow;
+        // get previous duration, if not present, we are using an old savegame so do not use the duration
+        if (! int.TryParse(saveData.Get("Quest", "duration"), out duration) )
+        {
+            duration = -1;
+        }
+
         Dictionary<string, string> saveVars = saveData.Get("Vars");
         vars = new VarManager(saveVars);
 
@@ -1123,6 +1140,17 @@ public class Quest
         string r = "[Quest]" + nl;
 
         r += "time=" + System.DateTime.Now.ToString() + nl;
+
+        // Current game duration + duration of previous game session before loading
+        if(duration>=0)
+        { 
+            System.TimeSpan current_duration = System.DateTime.UtcNow.Subtract( start_time );
+            r += "duration=" + (int)(this.duration + current_duration.TotalMinutes) + nl;
+        } else
+        {
+            // if previous duration is invalid, we are using an old savegame do not try to calculate anything
+            r += "duration=" + (-1);
+        }
 
         // Save valkyrie version
         r += "valkyrie=" + game.version + nl;

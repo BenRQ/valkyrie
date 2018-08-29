@@ -95,7 +95,7 @@ StatsGenerator.prototype._prepareStats = function _prepareStats()
     if (this.scenario_numberof_valid_victory[current_scenario_name] == 0)
       avg_win_ration = -1;
     else
-      avg_win_ration = (this.scenario_victory_sum [current_scenario_name] / current_scenario_number_play);
+      avg_win_ration = (this.scenario_victory_sum [current_scenario_name] / this.scenario_numberof_valid_victory[current_scenario_name]);
     
     if (current_scenario_number_play > 0) // should not be possible ... but just in case
     {
