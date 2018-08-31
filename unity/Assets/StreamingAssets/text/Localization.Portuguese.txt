@@ -36,6 +36,7 @@ D2E_NAME,Descent: Journeys in the Dark Second Edition
 D2E_QUEST_NAME,Aventura
 DEFEATED,Derrotado
 DELETE,Deletar
+UPDATE,Atualizar
 DIALOG,Diálogo
 DOOR,Porta
 DOWNLOAD,Download

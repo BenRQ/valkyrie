@@ -80,6 +80,7 @@ D2E_NAME,Descent: Journeys in the Dark Second Edition
 D2E_QUEST_NAME,Quest
 DEFEATED,Defeated
 DELETE,Delete
+UPDATE,Update
 DIALOG,Dialog
 DOOR,Door
 DOWNLOAD,Download

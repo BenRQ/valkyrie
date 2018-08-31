@@ -55,6 +55,7 @@ D2E_NAME,Descent 2. Edition: Die Reise ins Dunkel
 D2E_QUEST_NAME,Szenario
 DEFEATED,Besiegt
 DELETE,Löschen
+UPDATE,Update
 DIALOG,Dialog
 DOOR,Tür
 DOWNLOAD,Download

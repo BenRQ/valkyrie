@@ -127,7 +127,6 @@ namespace Assets.Scripts.UI.Screens
 
                     // Statistics
                     string filename = Path.GetFileName(key).ToLower();
-                    Debug.Log("Quest filename: " + filename + "\n");
                     if (game.stats!=null && game.stats.scenarios_stats.ContainsKey(filename))
                     {
                         ScenarioStats q_stats = game.stats.scenarios_stats[filename];
@@ -238,8 +237,9 @@ namespace Assets.Scripts.UI.Screens
                         ui.SetBGColor(new Color(0.4f, 0.4f, 0.4f));
                         offset += 1.2f;
                     }
+
+                    offset += 0.8f;
                 }
-                offset += 0.8f;
             }
 
             scrollArea.SetScrollSize(offset);

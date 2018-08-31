@@ -58,6 +58,7 @@ D2E_NAME,Descent : Voyages dans les Ténèbres (Seconde Edition)
 D2E_QUEST_NAME,Scenario
 DEFEATED,Éliminé
 DELETE,Supprimer
+UPDATE,Mise à jour
 DIALOG,Dialogue
 DOOR,Porte
 DOWNLOAD,Télécharger
