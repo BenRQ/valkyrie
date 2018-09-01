@@ -240,7 +240,7 @@ public class QuestDownload : MonoBehaviour
 
             // Statistics
             string filename = file.ToLower();
-            if (game.stats != null && game.stats.scenarios_stats.ContainsKey(filename))
+            if (game.stats != null && game.stats.scenarios_stats != null && game.stats.scenarios_stats.ContainsKey(filename))
             {
                 ScenarioStats q_stats = game.stats.scenarios_stats[filename];
                 int win_ratio = (int)(q_stats.scenario_avg_win_ratio * 100);

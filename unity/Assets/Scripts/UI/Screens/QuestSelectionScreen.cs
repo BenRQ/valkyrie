@@ -32,6 +32,41 @@ namespace Assets.Scripts.UI.Screens
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetFontSize(UIScaler.GetLargeFont());
 
+            // error message if stats are not available
+            if (game.stats.error_download)
+            {
+                float error_string_width = 0;
+                ui = new UIElement();
+                if(game.stats.error_download_description == "ERROR NETWORK")
+                {
+                    StringKey STATS_ERROR_NETWORK = new StringKey("val", "STATS_ERROR_NETWORK");
+                    ui.SetText(STATS_ERROR_NETWORK, Color.red);
+                    error_string_width = ui.GetStringWidth(STATS_ERROR_NETWORK);
+                }
+                else
+                {
+                    StringKey STATS_ERROR_HTTP = new StringKey("val", "STATS_ERROR_HTTP", game.stats.error_download_description);
+                    ui.SetText(STATS_ERROR_HTTP, Color.red);
+                    error_string_width = ui.GetStringWidth(STATS_ERROR_HTTP);
+                }
+                ui.SetLocation(UIScaler.GetHCenter() - (error_string_width / 2f), UIScaler.GetBottom(-3f), error_string_width, 2.4f);
+                ui.SetTextAlignment(TextAnchor.MiddleCenter);
+                ui.SetBGColor(Color.clear);
+            }
+
+            // error message if stats are not available
+            if (game.stats.download_ongoing)
+            {
+                float ongoing_string_width = 0;
+                ui = new UIElement();
+                StringKey STATS_DOWNLOAD_ONGOING = new StringKey("val", "STATS_DOWNLOAD_ONGOING");
+                ui.SetText(STATS_DOWNLOAD_ONGOING, Color.white);
+                ongoing_string_width = ui.GetStringWidth(STATS_DOWNLOAD_ONGOING);
+                ui.SetLocation(UIScaler.GetHCenter() - (ongoing_string_width / 2f), UIScaler.GetBottom(-3f), ongoing_string_width, 2.4f);
+                ui.SetTextAlignment(TextAnchor.MiddleCenter);
+                ui.SetBGColor(Color.clear);
+            }
+
             UIElementScrollVertical scrollArea = new UIElementScrollVertical();
             scrollArea.SetLocation(1, 5, UIScaler.GetWidthUnits() - 2f, 21f);
             new UIElementBorder(scrollArea);
@@ -127,7 +162,7 @@ namespace Assets.Scripts.UI.Screens
 
                     // Statistics
                     string filename = Path.GetFileName(key).ToLower();
-                    if (game.stats!=null && game.stats.scenarios_stats.ContainsKey(filename))
+                    if (game.stats!=null && game.stats.scenarios_stats !=null && game.stats.scenarios_stats.ContainsKey(filename))
                     {
                         ScenarioStats q_stats = game.stats.scenarios_stats[filename];
                         int win_ratio = (int)(q_stats.scenario_avg_win_ratio * 100);

@@ -60,14 +60,14 @@ class DataDownloader : MonoBehaviour
         if (www_get.isNetworkError)
         {
             // Most probably a connection error
-            callback_action("ERROR NETWORK:\n" + www_get.downloadHandler.text, true);
+            callback_action("ERROR NETWORK", true);
             Debug.Log("Error getting stats data : most probably a connectivity issue (please check your internet connection)");
         }
         else if (www_get.isHttpError)
         {
             // Most probably a connection error
-            callback_action("ERROR HTTP:\n"+ www_get.downloadHandler.text, true);
-            Debug.Log("Error getting stats data : most probably a connection error");
+            callback_action(www_get.error + " " + www_get.responseCode, true);
+            Debug.Log("Error getting stats data : most probably a connection error (server error)");
         }
         else
         {
@@ -151,7 +151,7 @@ class GoogleFormPostman : MonoBehaviour
 
         if (www.isNetworkError)
         {
-            // Most probably a connection error
+            // Most probably a connectivity error
             Debug.Log("Error sending stats : most probably a connectivity issue (please check your internet connection)");
         }
         else if (www.isHttpError)
@@ -176,7 +176,9 @@ public class StatsManager
     public Stats_JSONobject stats_json;
     public Dictionary<string,ScenarioStats> scenarios_stats = null;
 
-    public bool error_download=false;
+    public bool error_download = false;
+    public string error_download_description = "";
+    public bool download_ongoing = false;
 
     // stats for current scenario, to be submitted
     private PublishedGameStats gameStats = null;
@@ -304,14 +306,18 @@ public class StatsManager
             json_client = network_get.AddComponent<DataDownloader>();
         }
 
+        download_ongoing = true;
         json_client.download("https://drive.google.com/uc?id=1lEhwFWrryzNH6DUMbte37G1p22SyDhu9&export=download", StatsDownload_callback);
     }
 
     private void StatsDownload_callback(string data, bool error)
     {
+        download_ongoing = false;
+
         if (error)
         {
             error_download = true;
+            error_download_description = data;
             return;
         }
 
