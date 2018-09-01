@@ -178,7 +178,7 @@ namespace Assets.Scripts.UI.Screens
             if(game_won=="not set" || selected_rating == 0)
             {
                 error_message.SetText(STATS_MISSING_INFO,Color.red);
-                error_message.SetBGColor(new Color(0, 0.03f, 0f));
+                error_message.SetBGColor(Color.clear);
                 return;
             }
             

@@ -210,7 +210,7 @@ public class QuestDownload : MonoBehaviour
             if (difficulty != 0)
             {
                 ui = new UIElement(scrollArea.GetScrollTransform());
-                ui.SetLocation(UIScaler.GetHCenter() - 4.5f, offset + 2.3f, 4, 1);
+                ui.SetLocation(UIScaler.GetHCenter() - 5.5f, offset + 2.3f, 6, 1);
                 ui.SetText(new StringKey("val", "DIFFICULTY"), text_color);
                 if (update) ui.SetButton(delegate { Selection(rq); });
                 ui.SetTextAlignment(TextAnchor.MiddleRight);
@@ -223,7 +223,7 @@ public class QuestDownload : MonoBehaviour
                 }
 
                 ui = new UIElement(scrollArea.GetScrollTransform());
-                ui.SetLocation(UIScaler.GetHCenter() - 1, offset + 1.8f, 9, 2);
+                ui.SetLocation(UIScaler.GetHCenter(), offset + 1.8f, 9, 2);
                 ui.SetText(symbol + symbol + symbol + symbol + symbol, text_color);
                 ui.SetBGColor(Color.clear);
                 ui.SetFontSize(UIScaler.GetMediumFont());
@@ -303,18 +303,18 @@ public class QuestDownload : MonoBehaviour
 
                     //  average duration
                     ui = new UIElement(scrollArea.GetScrollTransform());
-                    ui.SetLocation(6f, offset + 3.8f, 11, 1);
+                    ui.SetLocation(6f, offset + 3.8f, 14, 1);
                     if (q_stats.scenario_avg_duration > 0)
                         ui.SetText(STATS_AVERAGE_DURATION, text_color);
                     else
                         ui.SetText(STATS_NO_AVERAGE_DURATION, text_color);
-                    ui.SetTextAlignment(TextAnchor.MiddleCenter);
+                    ui.SetTextAlignment(TextAnchor.MiddleLeft);
                     ui.SetBGColor(Color.clear);
                     if (update) ui.SetButton(delegate { Selection(rq); });
 
                     //  average win ratio
                     ui = new UIElement(scrollArea.GetScrollTransform());
-                    ui.SetLocation(UIScaler.GetHCenter() - 4.5f, offset + 3.8f, 13, 1);
+                    ui.SetLocation(UIScaler.GetHCenter() - 5.5f, offset + 3.8f, 15, 1);
                     if (win_ratio >= 0)
                         ui.SetText(STATS_AVERAGE_WIN_RATIO, text_color);
                     else
@@ -336,7 +336,6 @@ public class QuestDownload : MonoBehaviour
                     ui.SetText(CommonStringKeys.UPDATE, Color.black);
                     string_width = ui.GetStringWidth(CommonStringKeys.UPDATE, UIScaler.GetSmallFont()) + 1.3f;
                     ui.SetButton(delegate { Delete(file); Selection(rq); });
-                    //ui.SetLocation(((UIScaler.GetWidthUnits() - 3f) / 2f) - (string_width / 2f), offset + 3.1f, string_width, 1.2f);
                     ui.SetLocation(0.95f, offset + 3.6f, string_width, 1.2f);
                     ui.SetBGColor(new Color(0, 0.5f, 0.68f)); // 0080AF  
                     new UIElementBorder(ui, new Color(0, 0.3f, 0.43f));  // 00516f

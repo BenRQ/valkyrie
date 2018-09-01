@@ -122,7 +122,6 @@ namespace Assets.Scripts.UI.Screens
                         ui.SetBGColor(Color.clear);
 
                         ui = new UIElement(scrollArea.GetScrollTransform());
-                        //ui.SetLocation(UIScaler.GetRight(-11), offset, 2, 1);
                         ui.SetLocation(10.5f, offset + 2.3f, 5, 1);
                         ui.SetText(q.Value.lengthMin+ "  -  " + q.Value.lengthMax, Color.black);
                         ui.SetButton(delegate { Selection(key); });
@@ -134,7 +133,7 @@ namespace Assets.Scripts.UI.Screens
                     if (q.Value.difficulty != 0)
                     {
                         ui = new UIElement(scrollArea.GetScrollTransform());
-                        ui.SetLocation(UIScaler.GetHCenter()-4.5f, offset + 2.3f, 4, 1);
+                        ui.SetLocation(UIScaler.GetHCenter()-5.5f, offset + 2.3f, 6, 1);
                         ui.SetText(new StringKey("val", "DIFFICULTY"), Color.black);
                         ui.SetButton(delegate { Selection(key); });
                         ui.SetTextAlignment(TextAnchor.MiddleRight);
@@ -146,8 +145,7 @@ namespace Assets.Scripts.UI.Screens
                             symbol = new StringKey("val", "ICON_SUCCESS_RESULT").Translate();
                         }
                         ui = new UIElement(scrollArea.GetScrollTransform());
-                        // ui.SetLocation(UIScaler.GetRight(-13), offset + 1, 9, 2);
-                        ui.SetLocation(UIScaler.GetHCenter()-1, offset + 1.8f, 9, 2);
+                        ui.SetLocation(UIScaler.GetHCenter(), offset + 1.8f, 9, 2);
                         ui.SetText(symbol + symbol + symbol + symbol + symbol, Color.black);
                         ui.SetBGColor(Color.clear);
                         ui.SetFontSize(UIScaler.GetMediumFont());
@@ -218,18 +216,18 @@ namespace Assets.Scripts.UI.Screens
 
                             //  average duration
                             ui = new UIElement(scrollArea.GetScrollTransform());
-                            ui.SetLocation(5f, offset + 3.8f, 11, 1);
+                            ui.SetLocation(5f, offset + 3.8f, 14, 1);
                             if (q_stats.scenario_avg_duration > 0)
                                 ui.SetText(STATS_AVERAGE_DURATION, Color.white);
                             else
                                 ui.SetText(STATS_NO_AVERAGE_DURATION, Color.white);
-                            ui.SetTextAlignment(TextAnchor.MiddleCenter);
+                            ui.SetTextAlignment(TextAnchor.MiddleLeft);
                             ui.SetBGColor(Color.clear);
                             ui.SetButton(delegate { Selection(key); });
  
                             //  average win ratio
                             ui = new UIElement(scrollArea.GetScrollTransform());
-                            ui.SetLocation(UIScaler.GetHCenter() - 4.5f, offset + 3.8f, 13, 1);
+                            ui.SetLocation(UIScaler.GetHCenter() - 5.5f, offset + 3.8f, 15, 1);
                             if(win_ratio>=0)
                                 ui.SetText(STATS_AVERAGE_WIN_RATIO, Color.white);
                             else
