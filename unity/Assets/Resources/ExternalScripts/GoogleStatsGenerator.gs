@@ -16,14 +16,14 @@ function StatsGenerator() {
 
 }
 
-//     0            1            2       3         4           5            6              7                 8                  9
-// time	  |  Scenario name | Victory | rating | Comments | duration	| NB of players | investigators | Events activated | Language selected				
+//     0            1             2           3         4         5         6              7               8                 9                 10
+// time	  |  Scenario name | quest name  | Victory | rating | Comments | duration	| NB of players | investigators | Events activated | Language selected				
 
 // Columns order in channel list sheet
 var _col_scenario_name       = 1;
-var _col_Victory             = 2;
-var _col_rating              = 3;
-var _col_duration            = 5;
+var _col_Victory             = 3;
+var _col_rating              = 4;
+var _col_duration            = 6;
 
 
 StatsGenerator.prototype.generate = function generate()
