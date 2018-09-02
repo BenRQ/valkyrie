@@ -443,7 +443,7 @@ ATTACK_WITH_UNARMED, Attack Unarmed
 
 ACTION_X, {0}
 
-STATS_WELCOME,Thank you for playing. Please rate and share your experience for future players. Your game actions will be shared with the game author to help him improve this scenario.
+STATS_WELCOME,Thank you for playing. Please rate and share your experience for future players. Your game actions will be shared with the game authors to help them improve this scenario.
 STATS_ASK_VICTORY,Did you win this game?
 STATS_ASK_VICTORY_YES,YES!
 STATS_ASK_VICTORY_NO,No...
@@ -459,6 +459,6 @@ STATS_AVERAGE_DURATION,Average duration: {0} min
 STATS_NO_AVERAGE_DURATION,Average duration unavailable
 STATS_NO_AVERAGE_WIN_RATIO,Average win ratio unavailable
 
-STATS_DOWNLOAD_ONGOING,Downloading game statistics and rating...\nPlease reload page in a few seconds
+STATS_DOWNLOAD_ONGOING,Downloading game statistics and rating...\nPlease reload the page in a few seconds
 STATS_ERROR_HTTP,Error getting game statistic, if the problem persists please report the issue on github Valkyrie\n{0}
 STATS_ERROR_NETWORK,Error getting game statistic, please check your internet connection
