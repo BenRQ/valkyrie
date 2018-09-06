@@ -29,6 +29,10 @@ public class NextStageButton
         if (!Game.Get().quest.firstTileDisplayed) 
             return;
 
+        // do not display the button bar when we are in the editor
+        if (Game.Get().editMode)
+            return;
+
         // Clean up everything marked as 'uiphase'
         foreach (GameObject go in GameObject.FindGameObjectsWithTag(Game.UIPHASE))
             Object.Destroy(go);
