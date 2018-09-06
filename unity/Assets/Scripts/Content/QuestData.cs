@@ -135,10 +135,6 @@ public class QuestData
             {
                 package_filename = questIniData.Get("Package", "filename");
             }
-            else
-            {
-                ValkyrieDebug.Log("Quest is not an archive");
-            }
         }
 
         foreach (string f in iniFiles)
