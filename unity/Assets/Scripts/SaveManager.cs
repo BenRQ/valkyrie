@@ -4,6 +4,7 @@ using System.IO;
 using Ionic.Zip;
 using ValkyrieTools;
 using Assets.Scripts.Content;
+using Assets.Scripts;
 
 // This class provides functions to load and save games.
 class SaveManager
@@ -167,14 +168,14 @@ class SaveManager
                     return;
                 }
 
-                if (VersionNewer(game.version, saveData.Get("Quest", "valkyrie")))
+                if (VersionManager.VersionNewer(game.version, saveData.Get("Quest", "valkyrie")))
                 {
                     ValkyrieDebug.Log("Error: save is from a future version." + System.Environment.NewLine);
                     Destroyer.MainMenu();
                     return;
                 }
 
-                if (!VersionNewerOrEqual(minValkyieVersion, saveData.Get("Quest", "valkyrie")))
+                if (!VersionManager.VersionNewerOrEqual(minValkyieVersion, saveData.Get("Quest", "valkyrie")))
                 {
                     ValkyrieDebug.Log("Error: save is from an old unsupported version." + System.Environment.NewLine);
                     Destroyer.MainMenu();
@@ -258,57 +259,6 @@ class SaveManager
         }
     }
 
-    // Test version of the form a.b.c is newer or equal
-    public static bool VersionNewerOrEqual(string oldVersion, string newVersion)
-    {
-        string oldS = System.Text.RegularExpressions.Regex.Replace(oldVersion, "[^0-9]", "");
-        string newS = System.Text.RegularExpressions.Regex.Replace(newVersion, "[^0-9]", "");
-        // If numbers are the same they are equal
-        if (oldS.Equals(newS)) return true;
-        return VersionNewer(oldVersion, newVersion);
-    }
-
-    // Test version of the form a.b.c is newer
-    public static bool VersionNewer(string oldVersion, string newVersion)
-    {
-        // Split into components
-        string[] oldV = oldVersion.Split('.');
-        string[] newV = newVersion.Split('.');
-
-        if (newVersion.Equals("")) return false;
-
-        if (oldVersion.Equals("")) return true;
-
-        // Different number of components
-        if (oldV.Length != newV.Length)
-        {
-            return true;
-        }
-        // Check each component
-        for (int i = 0; i < oldV.Length; i++)
-        {
-            // Strip for only numbers
-            string oldS = System.Text.RegularExpressions.Regex.Replace(oldV[i], "[^0-9]", "");
-            string newS = System.Text.RegularExpressions.Regex.Replace(newV[i], "[^0-9]", "");
-            try
-            {
-                if (int.Parse(oldS) < int.Parse(newS))
-                {
-                    return true;
-                }
-                if (int.Parse(oldS) > int.Parse(newS))
-                {
-                    return false;
-                }
-            }
-            catch (System.Exception)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static List<SaveData> GetSaves()
     {
         List<SaveData> saves = new List<SaveData>();
@@ -371,13 +321,13 @@ class SaveManager
                     LocalizationRead.AddDictionary("qst", tmpDict);
                 }
 
-                if (VersionNewer(game.version, saveData.Get("Quest", "valkyrie")))
+                if (VersionManager.VersionNewer(game.version, saveData.Get("Quest", "valkyrie")))
                 {
                     ValkyrieDebug.Log("Warning: Save " + num + " is from a future version." + System.Environment.NewLine);
                     return;
                 }
 
-                if (!VersionNewerOrEqual(minValkyieVersion, saveData.Get("Quest", "valkyrie")))
+                if (!VersionManager.VersionNewerOrEqual(minValkyieVersion, saveData.Get("Quest", "valkyrie")))
                 {
                     ValkyrieDebug.Log("Warning: Save " + num + " is from an old unsupported version." + System.Environment.NewLine);
                     return;
