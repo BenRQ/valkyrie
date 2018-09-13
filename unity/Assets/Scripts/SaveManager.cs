@@ -145,21 +145,21 @@ class SaveManager
                 zip.ExtractAll(valkyrieLoadPath);
                 zip.Dispose();
 
-                string data = File.ReadAllText(Path.Combine(valkyrieLoadPath, "save.ini"));
+                bool quest_embedded = Directory.Exists(Path.Combine(valkyrieLoadPath, "quest"));
 
-                IniData saveData = IniRead.ReadFromString(data);
+                string savefile_content = File.ReadAllText(Path.Combine(valkyrieLoadPath, "save.ini"));
+                IniData saveData = IniRead.ReadFromString(savefile_content);
 
-                string package_path = saveData.Get("Quest", "packagepath");
-
-                // if package_path is present, it means we are using the new savegame archive without the quest
-                // Quest needs to be extracted from original package before loading quest
-                if (package_path != "")
+                // we are using the new savegame archive without the quest
+                string package_filename = Path.GetFileName(saveData.Get("Quest", "originalpath"));
+                if(Path.GetExtension(package_filename) == ".valkyrie")
                 {
-                    QuestLoader.ExtractFullPackage(ContentData.DownloadPath() + Path.DirectorySeparatorChar + package_path);
+                    // Quest needs to be extracted from original package before loading quest
+                    QuestLoader.ExtractSinglePackageFull(ContentData.DownloadPath() + Path.DirectorySeparatorChar + package_filename);
                 }
-
+                
                 // Check that quest in save is valid
-                QuestData.Quest q = new QuestData.Quest(Path.GetDirectoryName(saveData.data["Quest"]["path"]));
+                QuestData.Quest q = new QuestData.Quest (Path.GetDirectoryName(saveData.Get("Quest", "path")));
                 if (!q.valid)
                 {
                     ValkyrieDebug.Log("Error: save contains unsupported quest version." + System.Environment.NewLine);
@@ -350,26 +350,27 @@ class SaveManager
                 image = ContentData.FileToTexture(Path.Combine(valkyrieLoadPath, "image.png"));
 
                 string data = File.ReadAllText(Path.Combine(valkyrieLoadPath, "save.ini"));
-
                 IniData saveData = IniRead.ReadFromString(data);
 
-                quest = saveData.Get("Quest", "questname");
-                if(quest == "")
+                // we are using the new savegame archive without the quest
+                string package_filename = Path.GetFileName(saveData.Get("Quest", "originalpath"));
+                if (Path.GetExtension(package_filename) == ".valkyrie")
                 {
-                    // This is an old savegame with embedded quest package
-                    // Check that quest in save is valid 
-                    QuestData.Quest q = new QuestData.Quest(Path.Combine(valkyrieLoadPath, "quest"));
-                    if (!q.valid)
-                    {
-                        ValkyrieDebug.Log("Warning: Save " + num + " contains unsupported quest version." + System.Environment.NewLine);
-                        return;
-                    }
-
-                    DictionaryI18n tmpDict = LocalizationRead.selectDictionary("qst");
-                    LocalizationRead.AddDictionary("qst", q.localizationDict);
-                    quest = q.name.Translate();
-                    LocalizationRead.AddDictionary("qst", tmpDict);
+                    // Quest needs to be extracted from original package before loading quest
+                    QuestLoader.ExtractSinglePackagePartial(ContentData.DownloadPath() + Path.DirectorySeparatorChar + package_filename);
                 }
+
+                // Check that quest is valid 
+                QuestData.Quest q = new QuestData.Quest(Path.GetDirectoryName(saveData.Get("Quest", "path")));
+                if (!q.valid)
+                {
+                    ValkyrieDebug.Log("Warning: Save " + num + " contains unsupported quest version." + System.Environment.NewLine);
+                    return;
+                }
+
+                // Translate quest name
+                LocalizationRead.AddDictionary("qst", q.localizationDict);
+                quest = q.name.Translate();
 
                 if (VersionNewer(game.version, saveData.Get("Quest", "valkyrie")))
                 {

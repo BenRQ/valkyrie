@@ -6,7 +6,6 @@ using Ionic.Zip;
 using ValkyrieTools;
 
 // Class for getting lists of quest with details
-// TODO: work out why this is so slow
 public class QuestLoader {
 
     // Return a dictionary of all available quests
@@ -19,6 +18,7 @@ public class QuestLoader {
         string dataLocation = Game.AppData();
         mkDir(dataLocation);
         CleanTemp();
+        mkDir(ContentData.DownloadPath());
 
         // Get a list of downloaded quest not packed
         List<string> questDirectories = GetQuests(ContentData.DownloadPath());
@@ -156,7 +156,7 @@ public class QuestLoader {
     /// Fully extract one single package, before starting a quest, and save package filename
     /// </summary>
     /// <param name="path">path of the file to extract</param>
-    public static void ExtractFullPackage(string path)
+    public static void ExtractSinglePackageFull(string path)
     {
         // Extract into temp
         string tempValkyriePath = ContentData.TempValyriePath;
@@ -178,12 +178,36 @@ public class QuestLoader {
         {
             ValkyrieDebug.Log("Warning: Unable to read file: " + extractedPath);
         }
+    }
 
-        // remember each package name, and use it when loading a quest
-        string nl = System.Environment.NewLine;
-        System.IO.File.AppendAllText(extractedPath + Path.DirectorySeparatorChar + "quest.ini",
-                                     nl + "[Package]" + nl + "filename=" + Path.GetFileName(path) + nl,
-                                     System.Text.Encoding.UTF8);
+    /// <summary>
+    /// Partial extract of a single package, before listing the savegames
+    /// Only the quest.ini and translations needs to be extracted to validate quest and get its name
+    /// </summary>
+    /// <param name="path">path of the file to extract</param>
+    public static void ExtractSinglePackagePartial(string path)
+    {
+        // Extract into temp
+        string tempValkyriePath = ContentData.TempValyriePath;
+        mkDir(tempValkyriePath);
+        string extractedPath = Path.Combine(tempValkyriePath, Path.GetFileName(path));
+        if (!Directory.Exists(extractedPath))
+        {
+            // should not be possible, just in case
+            mkDir(extractedPath);
+        }
+
+        try
+        {
+            ZipFile zip = ZipFile.Read(path);
+            zip.ExtractSelectedEntries("name = quest.ini", null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
+            zip.ExtractSelectedEntries("name = Localization.*.txt", null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
+            zip.Dispose();
+        }
+        catch (System.Exception)
+        {
+            ValkyrieDebug.Log("Warning: Unable to read file: " + extractedPath);
+        }
     }
 
     /// <summary>
@@ -228,12 +252,6 @@ public class QuestLoader {
             {
                 ValkyrieDebug.Log("Warning: Unable to read file: " + extractedPath);
             }
-
-            // remember each package name, and use it when loading a quest
-            string nl = System.Environment.NewLine;
-            System.IO.File.AppendAllText(extractedPath + Path.DirectorySeparatorChar + "quest.ini",
-                                        nl + "[Package]" + nl + "filename="+Path.GetFileName(f) + nl,
-                                         System.Text.Encoding.UTF8);
         }
     }
 

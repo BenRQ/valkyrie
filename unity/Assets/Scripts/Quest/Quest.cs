@@ -20,7 +20,7 @@ public class Quest
     public string questPath = "";
 
     /// <summary>
-    /// Original Quest Path
+    /// Original Quest Path (required for quest within a quest)
     /// </summary>
     public string originalPath = "";
 
@@ -561,12 +561,13 @@ public class Quest
         game.cc.maxLimit = false;
 
         // Set static quest data
-        qd = new QuestData(originalPath + "/" + path, qd.package_filename);
+        if (path.StartsWith("\\") || path.StartsWith("/"))
+        {
+            path = path.Substring(1, path.Length - 1);
+        }
+        qd = new QuestData(originalPath + Path.DirectorySeparatorChar + path);
         // set questPath but do not set original path, as we are loading from within a quest here.
         questPath = Path.GetDirectoryName(qd.questPath);
-
-        // Cannot load a quest from another archive (we don't know want to extract all available archives everytime here)
-        // QuestLoader.ExtractPackages(Game.AppData());
 
         vars.TrimQuest();
 
@@ -776,11 +777,7 @@ public class Quest
         }
 
         // Set static quest data
-        string pk_path = saveData.Get("Quest", "packagepath");
-        if (pk_path != "")
-            qd = new QuestData(saveData.Get("Quest", "path"), pk_path);
-        else
-            qd = new QuestData(saveData.Get("Quest", "path"));
+        qd = new QuestData(saveData.Get("Quest", "path"));
 
         originalPath = saveData.Get("Quest", "originalpath");
         questPath = saveData.Get("Quest", "path");
@@ -1164,7 +1161,7 @@ public class Quest
         } else
         {
             // if previous duration is invalid, we are using an old savegame do not try to calculate anything
-            r += "duration=" + (-1);
+            r += "duration=" + (-1) + nl;
         }
 
         // Save valkyrie version
@@ -1173,12 +1170,6 @@ public class Quest
         r += "path=" + qd.questPath + nl;
         r += "originalpath=" + originalPath + nl;
         r += "questname=" + qd.quest.name.Translate() + nl;
-
-        // we keep package filename to be able to extract the package when loading from a savegame
-        if (qd.package_filename != "")
-        {
-            r += "packagepath=" + qd.package_filename + nl;
-        }
 
         if (phase == MoMPhase.horror)
         {
