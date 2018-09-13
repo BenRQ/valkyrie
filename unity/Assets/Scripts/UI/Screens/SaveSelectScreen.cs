@@ -48,15 +48,15 @@ namespace Assets.Scripts.UI.Screens
             offset += 4;
             for (int i = 0; i < saves.Count; i++)
             {
+                if (i == 0 && save)
+                    continue;
+
                 int tmp = i;
                 if (saves[i].valid)
                 {
                     string name = SAVE.Translate() + " " + i;
                     if (i == 0)
-                    {
-                        if (save) continue;
-                        name = AUTOSAVE.Translate();
-                    }
+                    { name = AUTOSAVE.Translate(); }
 
                     ui = new UIElement();
                     ui.SetLocation(UIScaler.GetHCenter(-20), offset, 40, 4);
