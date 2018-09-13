@@ -16,7 +16,6 @@ public class QuestDownload : MonoBehaviour
     public Game game;
     List<RemoteQuest> remoteQuests;
     IniData localManifest;
-    Dictionary<string, Texture2D> textures;
 
     /// <summary>
     /// Download required files then draw screen
@@ -25,7 +24,6 @@ public class QuestDownload : MonoBehaviour
     {
         new LoadingScreen(new StringKey("val", "DOWNLOAD_LIST").Translate());
         game = Game.Get();
-        textures = new Dictionary<string, Texture2D>();
         remoteQuests = new List<RemoteQuest>();
         string remoteManifest = GetServerLocation() + "manifest.ini";
         StartCoroutine(Download(remoteManifest, DownloadManifest));

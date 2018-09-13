@@ -107,7 +107,6 @@ public class NextStageButton
         else
             color = Color.red;
 
-        int text_size = (int) (UIScaler.GetMediumFont() * 1);
         ui.SetText(phase, color);
         string_width = ui.GetStringWidth(phase, UIScaler.GetMediumFont(), Game.Get().gameType.GetHeaderFont()) + 0.5f;
         ui.SetLocation(offset + ((UIScaler.GetRight(-4f) - offset - string_width)*0.5f), UIScaler.GetBottom(-1.8f), string_width, 1.8f);
