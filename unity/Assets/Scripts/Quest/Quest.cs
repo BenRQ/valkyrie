@@ -30,6 +30,12 @@ public class Quest
     public Dictionary<string, BoardComponent> boardItems;
 
     /// <summary>
+    /// list of components on the board (tiles, tokens, doors) in the right order for savegames
+    ///  we need to use an ordered list of board item, to preserve items stacking order, Dictionary do not preserve order
+    /// </summary>
+    public List<string> ordered_boardItems;
+
+    /// <summary>
     /// vars for the quest 
     /// </summary>
     public VarManager vars;
@@ -122,6 +128,7 @@ public class Quest
 
         // Initialise data
         boardItems = new Dictionary<string, BoardComponent>();
+        ordered_boardItems = new List<string>();
         vars = new VarManager();
         items = new HashSet<string>();
         shops = new Dictionary<string, List<string>>();
@@ -575,6 +582,7 @@ public class Quest
 
         // Initialise data
         boardItems = new Dictionary<string, BoardComponent>();
+        ordered_boardItems = new List<string>();
         monsters = new List<Monster>();
         heroSelection = new Dictionary<string, List<Quest.Hero>>();
         puzzle = new Dictionary<string, Puzzle>();
@@ -798,28 +806,34 @@ public class Quest
 
         // Repopulate items on the baord
         boardItems = new Dictionary<string, BoardComponent>();
+        ordered_boardItems = new List<string>();
         Dictionary<string, string> saveBoard = saveData.Get("Board");
         foreach (KeyValuePair<string, string> kv in saveBoard)
         {
             if (kv.Key.IndexOf("Door") == 0)
             {
                 boardItems.Add(kv.Key, new Door(qd.components[kv.Key] as QuestData.Door, game));
+                ordered_boardItems.Add(kv.Key);
             }
             if (kv.Key.IndexOf("Token") == 0)
             {
                 boardItems.Add(kv.Key, new Token(qd.components[kv.Key] as QuestData.Token, game));
+                ordered_boardItems.Add(kv.Key);
             }
             if (kv.Key.IndexOf("Tile") == 0)
             {
                 boardItems.Add(kv.Key, new Tile(qd.components[kv.Key] as QuestData.Tile, game));
+                ordered_boardItems.Add(kv.Key);
             }
             if (kv.Key.IndexOf("UI") == 0)
             {
                 boardItems.Add(kv.Key, new UI(qd.components[kv.Key] as QuestData.UI, game));
+                ordered_boardItems.Add(kv.Key);
             }
             if (kv.Key.IndexOf("#shop") == 0)
             {
                 boardItems.Add(kv.Key, new ShopInterface(new List<string>(), Game.Get(), activeShop));
+                ordered_boardItems.Add(kv.Key);
             }
         }
 
@@ -1008,18 +1022,22 @@ public class Quest
         if (qc is QuestData.Tile)
         {
             boardItems.Add(name, new Tile((QuestData.Tile)qc, game));
+            ordered_boardItems.Add(name);
         }
         if (qc is QuestData.Door)
         {
             boardItems.Add(name, new Door((QuestData.Door)qc, game));
+            ordered_boardItems.Add(name);
         }
         if (qc is QuestData.Token)
         {
             boardItems.Add(name, new Token((QuestData.Token)qc, game));
+            ordered_boardItems.Add(name);
         }
         if (qc is QuestData.UI)
         {
             boardItems.Add(name, new UI((QuestData.UI)qc, game));
+            ordered_boardItems.Add(name);
         }
         if (qc is QuestData.QItem && !shop)
         {
@@ -1054,6 +1072,7 @@ public class Quest
         {
             boardItems[name].Remove();
             boardItems.Remove(name);
+            ordered_boardItems.Remove(name);
         }
         if (monsterSelect.ContainsKey(name))
         {
@@ -1094,6 +1113,7 @@ public class Quest
                 bc.Remove();
             }
             boardItems.Clear();
+            ordered_boardItems.Clear();
         }
     }
 
@@ -1116,6 +1136,7 @@ public class Quest
         }
 
         boardItems.Clear();
+        ordered_boardItems.Clear();
     }
 
     // Change the transparency of a component on the board
@@ -1201,9 +1222,11 @@ public class Quest
         }
 
         r += "[Board]" + nl;
-        foreach (KeyValuePair<string, BoardComponent> kv in boardItems)
+        // we need to use an ordered list of board item, to preserve items stacking order, Dictionary do not preserve order
+        // foreach (KeyValuePair<string, BoardComponent> kv in boardItems)
+        foreach (string item in ordered_boardItems)
         {
-            r += kv.Key + nl;
+            r += item + nl;
         }
 
         r += vars.ToString();
