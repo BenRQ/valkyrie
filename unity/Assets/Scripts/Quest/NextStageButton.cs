@@ -172,10 +172,8 @@ public class NextStageButton
 
     public void Log()
     {
-        if (GameObject.FindGameObjectWithTag(Game.DIALOG) != null)
-        {
-            return;
-        }
+        // log window should always be available, do not test for Dialog existence
+
         new LogWindow();
     }
 
