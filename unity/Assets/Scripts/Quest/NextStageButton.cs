@@ -148,6 +148,8 @@ public class NextStageButton
         if (game.quest.phase == Quest.MoMPhase.monsters)
         {
             game.audioControl.PlayTrait("horror");
+            game.quest.phase = Quest.MoMPhase.horror;
+            return;
         }
 
         if (game.quest.phase == Quest.MoMPhase.horror)
