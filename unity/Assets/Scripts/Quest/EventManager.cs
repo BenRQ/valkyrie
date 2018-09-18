@@ -419,10 +419,18 @@ public class EventManager
         if (game.quest.vars.GetValue("$end") != 0)
         {
             game.quest.questHasEnded = true;
-            new EndGameScreen();
 
-            //  Destroyer.MainMenu();
 
+            if(Path.GetFileName(game.quest.originalPath).IndexOf("EditorScenario") == 0)
+            {
+                // do not show score screen for scenario with a non customized name
+                Destroyer.MainMenu();
+            }
+            else
+            {
+                new EndGameScreen();
+            }
+            
             return;
         }
 
