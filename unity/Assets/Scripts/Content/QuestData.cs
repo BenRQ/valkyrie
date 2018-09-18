@@ -944,12 +944,17 @@ public class QuestData
             }
             if (data.ContainsKey("audio"))
             {
-                audio = data["audio"];
+                string value = data["audio"];
+                audio = value != null ? value.Replace('\\', '/') : value;
             }
             music = new List<string>();
             if (data.ContainsKey("music"))
             {
                 music = new List<string>(data["music"].Split(" ".ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries));
+                for (int i = 0; i < music.Count; i++)
+                {
+                    music[i] = music[i].Replace('\\', '/');
+                }
             }
         }
 
