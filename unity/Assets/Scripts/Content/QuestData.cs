@@ -101,7 +101,7 @@ public class QuestData
                 if (file != null && file.Length > 0)
                 {
                     // path is relative to the main file (absolute not supported)
-                    localizationFiles.Add(Path.GetDirectoryName(questPath) + "/" + file);
+                    localizationFiles.Add(Path.GetDirectoryName(questPath) + Path.DirectorySeparatorChar + file);
                 }
             }
         }
@@ -1587,7 +1587,7 @@ public class QuestData
                 // this will use the base monster type
                 return "";
             }
-            return path + "/" + imagePath;
+            return path + Path.DirectorySeparatorChar + imagePath;
         }
         public string GetImagePlacePath()
         {
@@ -1596,7 +1596,7 @@ public class QuestData
                 // this will use the base monster type
                 return "";
             }
-            return path + "/" + imagePlace;
+            return path + Path.DirectorySeparatorChar + imagePlace;
         }
 
         // Save to string (editor)
@@ -1931,7 +1931,13 @@ public class QuestData
             {
                 path = path.Substring(0, path.Length - 1);
             }
+
             Dictionary<string, string> iniData = IniRead.ReadFromIni(path + Path.DirectorySeparatorChar + "quest.ini", "Quest");
+            if (iniData == null)
+            {
+                valid = false;
+                return;
+            }
 
             // do not parse the content of a quest from another game type
             if (iniData.ContainsKey("type") && iniData["type"] != Game.Get().gameType.TypeName())

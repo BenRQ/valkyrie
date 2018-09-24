@@ -668,7 +668,7 @@ public class Quest
                 }
                 else
                 {
-                    toPlay.Add(Path.GetDirectoryName(qd.questPath) + "/" + s);
+                    toPlay.Add(Path.GetDirectoryName(qd.questPath) + Path.DirectorySeparatorChar + s);
                 }
             }
             game.audioControl.Music(toPlay, false);
@@ -1559,7 +1559,7 @@ public class Quest
             }
             else if (qUI.imageName.Length > 0)
             {
-                newTex = ContentData.FileToTexture(Path.GetDirectoryName(game.quest.qd.questPath) + "/" + qUI.imageName);
+                newTex = ContentData.FileToTexture(Path.GetDirectoryName(game.quest.qd.questPath) + Path.DirectorySeparatorChar + qUI.imageName);
             }
 
             // Create object

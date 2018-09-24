@@ -101,17 +101,17 @@ public class EditorTools
         string packageName = Path.GetFileName(Path.GetDirectoryName(game.quest.qd.questPath));
         try
         {
-            string destination = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/" + packageName;
+            string destination = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + packageName;
             int postfix = 2;
             while (Directory.Exists(destination))
             {
-                destination = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/" + packageName + postfix++;
+                destination = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + Path.DirectorySeparatorChar + packageName + postfix++;
             }
             Directory.CreateDirectory(destination);
 
             ZipFile zip = new ZipFile();
             zip.AddDirectory(Path.GetDirectoryName(game.quest.qd.questPath));
-            zip.Save(destination + "/" + packageName + ".valkyrie");
+            zip.Save(destination + Path.DirectorySeparatorChar + packageName + ".valkyrie");
 
             string icon = game.quest.qd.quest.image;
             if (icon.Length > 0)
@@ -119,14 +119,14 @@ public class EditorTools
                 string iconName = Path.GetFileName(icon);
                 // Temp hack to get ToString to output local file
                 game.quest.qd.quest.image = iconName;
-                File.Copy(Path.Combine(Path.GetDirectoryName(game.quest.qd.questPath), icon), destination + "/" + iconName);
+                File.Copy(Path.Combine(Path.GetDirectoryName(game.quest.qd.questPath), icon), destination + Path.DirectorySeparatorChar + iconName);
             }
             string manifest = game.quest.qd.quest.ToString();
             // Restore icon
             game.quest.qd.quest.image = icon;
 
             // Append sha version
-            using (FileStream stream = File.OpenRead(destination + "/" + packageName + ".valkyrie"))
+            using (FileStream stream = File.OpenRead(destination + Path.DirectorySeparatorChar + packageName + ".valkyrie"))
             {
                 byte[] checksum = SHA256Managed.Create().ComputeHash(stream);
                 manifest += "version=" + System.BitConverter.ToString(checksum) + "\n";
@@ -138,7 +138,7 @@ public class EditorTools
             }
 
 
-            File.WriteAllText(destination + "/" + packageName + ".ini", manifest);
+            File.WriteAllText(destination + Path.DirectorySeparatorChar + packageName + ".ini", manifest);
         }
         catch (System.IO.IOException e)
         {

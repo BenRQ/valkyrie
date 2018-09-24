@@ -112,7 +112,7 @@ public class EventManager
         // Check if the event doesn't exists - quest fault
         if (!events.ContainsKey(name))
         {
-            if (File.Exists(game.quest.originalPath + "/" + name))
+            if (File.Exists(game.quest.originalPath + Path.DirectorySeparatorChar + name))
             {
                 events.Add(name, new StartQuestEvent(name));
             }
@@ -174,7 +174,7 @@ public class EventManager
         }
         else if (e.qEvent.audio.Length > 0)
         {
-            game.audioControl.Play(Path.GetDirectoryName(game.quest.qd.questPath) + "/" + e.qEvent.audio);
+            game.audioControl.Play(Path.GetDirectoryName(game.quest.qd.questPath) + Path.DirectorySeparatorChar + e.qEvent.audio);
         }
 
         // Set Music
@@ -189,7 +189,7 @@ public class EventManager
                 }
                 else
                 {
-                    music.Add(Path.GetDirectoryName(game.quest.qd.questPath) + "/" + s);
+                    music.Add(Path.GetDirectoryName(game.quest.qd.questPath) + Path.DirectorySeparatorChar + s);
                 }
             }
             game.audioControl.Music(music, false);
@@ -398,7 +398,7 @@ public class EventManager
             // Check if the event doesn't exists - quest fault
             if (!events.ContainsKey(s))
             {
-                if (File.Exists(game.quest.originalPath + "/" + s))
+                if (File.Exists(game.quest.originalPath + Path.DirectorySeparatorChar + s))
                 {
                     events.Add(s, new StartQuestEvent(s));
                     enabledEvents.Add(s);
@@ -671,7 +671,7 @@ public class EventManager
                     // Check if the event doesn't exists - quest fault
                     if (!game.quest.eManager.events.ContainsKey(s))
                     {
-                        if (File.Exists(game.quest.originalPath + "/" + s))
+                        if (File.Exists(game.quest.originalPath + Path.DirectorySeparatorChar + s))
                         {
                             game.quest.eManager.events.Add(s, new StartQuestEvent(s));
                             return true;
