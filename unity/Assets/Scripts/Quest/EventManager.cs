@@ -420,10 +420,10 @@ public class EventManager
         {
             game.quest.questHasEnded = true;
 
-
-            if(Path.GetFileName(game.quest.originalPath).IndexOf("EditorScenario") == 0)
+            if( Path.GetFileName(game.quest.originalPath).StartsWith("EditorScenario") 
+             || !Path.GetFileName(game.quest.originalPath).EndsWith(".valkyrie") )
             {
-                // do not show score screen for scenario with a non customized name
+                // do not show score screen for scenario with a non customized name, or if the scenario is not a package (most probably a test)
                 Destroyer.MainMenu();
             }
             else
