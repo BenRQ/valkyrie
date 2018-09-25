@@ -89,7 +89,7 @@ namespace Assets.Scripts.UI.Screens
 
                     ui = new UIElement();
                     ui.SetLocation(UIScaler.GetHCenter(-12), offset + 2.6f, 31, 1);
-                    ui.SetText(saves[i].quest);
+                    ui.SetText(saves[i].quest_name);
                     ui.SetTextAlignment(TextAnchor.MiddleLeft);
                     ui.SetButton(delegate { Select(tmp); });
                 }
@@ -130,7 +130,7 @@ namespace Assets.Scripts.UI.Screens
         {
             if (save)
             {
-                SaveManager.SaveWithScreen(num);
+                SaveManager.Save(num);
                 Destroyer.Dialog();
             }
             else

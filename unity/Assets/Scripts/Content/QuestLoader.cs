@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Ionic.Zip;
 using ValkyrieTools;
 
 // Class for getting lists of quest with details
@@ -161,23 +159,9 @@ public class QuestLoader {
         // Extract into temp
         string tempValkyriePath = ContentData.TempValyriePath;
         mkDir(tempValkyriePath);
-        string extractedPath = Path.Combine(tempValkyriePath, Path.GetFileName(path));
-        if (!Directory.Exists(extractedPath))
-        {
-            // should not be possible, just in case
-            mkDir(extractedPath);
-        }
 
-        try
-        {
-            ZipFile zip = ZipFile.Read(path);
-            zip.ExtractAll(extractedPath, ExtractExistingFileAction.OverwriteSilently);
-            zip.Dispose();
-        }
-        catch (System.Exception)
-        {
-            ValkyrieDebug.Log("Warning: Unable to read file: " + extractedPath);
-        }
+        string extractedPath = Path.Combine(tempValkyriePath, Path.GetFileName(path));
+        ZipManager.Extract(extractedPath, path, ZipManager.Extract_mode.ZIPMANAGER_EXTRACT_FULL);
     }
 
     /// <summary>
@@ -188,26 +172,8 @@ public class QuestLoader {
     public static void ExtractSinglePackagePartial(string path)
     {
         // Extract into temp
-        string tempValkyriePath = ContentData.TempValyriePath;
-        mkDir(tempValkyriePath);
-        string extractedPath = Path.Combine(tempValkyriePath, Path.GetFileName(path));
-        if (!Directory.Exists(extractedPath))
-        {
-            // should not be possible, just in case
-            mkDir(extractedPath);
-        }
-
-        try
-        {
-            ZipFile zip = ZipFile.Read(path);
-            zip.ExtractSelectedEntries("name = quest.ini", null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
-            zip.ExtractSelectedEntries("name = Localization.*.txt", null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
-            zip.Dispose();
-        }
-        catch (System.Exception)
-        {
-            ValkyrieDebug.Log("Warning: Unable to read file: " + extractedPath);
-        }
+        string extractedPath = Path.Combine(ContentData.TempValyriePath, Path.GetFileName(path));
+        ZipManager.Extract(extractedPath, path, ZipManager.Extract_mode.ZIPMANAGER_EXTRACT_INI_TXT);
     }
 
     /// <summary>
@@ -218,40 +184,12 @@ public class QuestLoader {
     {
         // Find all packages at path
         string[] archives = Directory.GetFiles(path, "*.valkyrie", SearchOption.AllDirectories);
+
         // Extract all packages
         foreach (string f in archives)
         {
-            // Extract into temp
-            string tempValkyriePath = ContentData.TempValyriePath;
-            mkDir(tempValkyriePath);
-            string extractedPath = Path.Combine(tempValkyriePath, Path.GetFileName(f));
-            if (Directory.Exists(extractedPath))
-            {
-                try
-                {
-                    Directory.Delete(extractedPath, true);
-                }
-                catch (System.Exception)
-                {
-                    ValkyrieDebug.Log("Warning: Unable to remove old temporary files: " + extractedPath);
-                }
-            }
-            mkDir(extractedPath);
-
-            try
-            {
-                ZipFile zip = ZipFile.Read(f);
-                zip.ExtractSelectedEntries("name = quest.ini", null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
-                zip.ExtractSelectedEntries("name = Localization.*.txt", null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
-                Dictionary<string, string> iniData = IniRead.ReadFromIni(extractedPath + "/quest.ini", "Quest");
-                if (iniData.ContainsKey("image"))
-                    zip.ExtractSelectedEntries("name = " + iniData["image"], null, extractedPath, ExtractExistingFileAction.OverwriteSilently);
-                zip.Dispose();
-            }
-            catch (System.Exception)
-            {
-                ValkyrieDebug.Log("Warning: Unable to read file: " + extractedPath);
-            }
+            string extractedPath = Path.Combine(ContentData.TempValyriePath, Path.GetFileName(f));
+            ZipManager.Extract(extractedPath, f, ZipManager.Extract_mode.ZIPMANAGER_EXTRACT_INI_TXT_PIC);
         }
     }
 

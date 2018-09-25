@@ -93,6 +93,30 @@ public class ContentData {
         }
     }
 
+    public static string ValkyrieLoadPath
+    {
+        get
+        {
+            return Path.Combine(TempValyriePath, "Load");
+        }
+    }
+
+    public static string ValkyriePreloadPath
+    {
+        get
+        {
+            return Path.Combine(TempValyriePath, "Preload");
+        }
+    }
+
+    public static string ValkyrieLoadQuestPath
+    {
+        get
+        {
+            return Path.Combine(ValkyrieLoadPath, "quest");
+        }
+    }
+
     /// <summary>
     /// Seach the provided path for all content packs and read meta data.</summary>
     /// <param name="path">Path to search for content packs.</param>

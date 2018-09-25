@@ -101,6 +101,12 @@ public class Quest
     // This is true once the first tile has been displayed
     public bool firstTileDisplayed = false;
 
+    // This is true once the first autoSave has been done
+    public bool firstAutoSaveDone = false;
+
+    // This is true if the game is loaded from a savegame
+    public bool fromSavegame = false;
+
     // Quest start time (or load time)
     public System.DateTime start_time;
 
@@ -651,6 +657,8 @@ public class Quest
         // This happens anyway but we need it to be here before the following code is executed (also needed for loading saves)
         game.quest = this;
 
+        fromSavegame = true;
+
         // Set static quest data
         qd = new QuestData(saveData.Get("Quest", "path"));
 
@@ -783,9 +791,6 @@ public class Quest
         {
             items.Add(kv.Key);
         }
-
-        // Set static quest data
-        qd = new QuestData(saveData.Get("Quest", "path"));
 
         originalPath = saveData.Get("Quest", "originalpath");
         questPath = saveData.Get("Quest", "path");
