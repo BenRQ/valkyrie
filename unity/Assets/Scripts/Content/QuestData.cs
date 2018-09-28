@@ -1935,6 +1935,7 @@ public class QuestData
             Dictionary<string, string> iniData = IniRead.ReadFromIni(path + Path.DirectorySeparatorChar + "quest.ini", "Quest");
             if (iniData == null)
             {
+                ValkyrieDebug.Log("Could not load the quest.ini file in " + path + Path.DirectorySeparatorChar + "quest.ini");
                 valid = false;
                 return;
             }

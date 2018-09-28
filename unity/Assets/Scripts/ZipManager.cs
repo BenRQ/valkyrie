@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Ionic.Zip;
 using ValkyrieTools;
-using Assets.Scripts.Content;
-using Unity.Jobs;
-using Unity.Collections;
-using System.Text;
 using System.Threading;
 
 public class ZipManager : MonoBehaviour
@@ -25,7 +21,7 @@ public class ZipManager : MonoBehaviour
         {
             if (!local_update)
             {
-                Debug.Log("New savefile with quest : " + local_quest_path);
+                // New savefile with quest
                 ZipFile zip = new ZipFile();
                 zip.AddFile(Path.Combine(local_tempPath, "save.ini"), "");
                 zip.AddFile(Path.Combine(local_tempPath, "image.png"), "");
@@ -35,15 +31,13 @@ public class ZipManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Update savefile without quest");
+                // Update savefile without quest
                 ZipFile zip = ZipFile.Read(local_archive_path);
                 zip.UpdateFile(Path.Combine(local_tempPath, "save.ini") , "");
                 zip.UpdateFile(Path.Combine(local_tempPath, "image.png") , "");
                 zip.Save();
                 zip.Dispose();
             }
-
-            Debug.Log("save " + local_archive_path  +  " in archive_path "  + local_tempPath);
         }
         catch (System.Exception e)
         {
@@ -55,9 +49,7 @@ public class ZipManager : MonoBehaviour
     {
         if (_job_started)
         {
-            Debug.Log("wait for end of save in write");
             _jobHandle.Join();
-            Debug.Log("end of save");
         }
 
         local_tempPath = tempPath;
@@ -67,7 +59,6 @@ public class ZipManager : MonoBehaviour
 
         _jobHandle = new Thread(_Execute);
         _jobHandle.Start();
-        Debug.Log("new job started");
 
         _job_started = true;
     }
@@ -76,9 +67,7 @@ public class ZipManager : MonoBehaviour
     {
         if (_job_started)
         {
-            Debug.Log("wait for end of save in Wait4PreviousSave");
             _jobHandle.Join();
-            Debug.Log("end of save");
             _job_started = false;
         }
     }
@@ -97,9 +86,7 @@ public class ZipManager : MonoBehaviour
         // make sure save is done, to not manipulate file being currently written
         if (_job_started)
         {
-            Debug.Log("wait for end of save in extract");
             _jobHandle.Join();
-            Debug.Log("end of save");
             _job_started = false;
         }
 
@@ -135,8 +122,9 @@ public class ZipManager : MonoBehaviour
                 zip.ExtractSelectedEntries("name = save.ini", null, target_path, ExtractExistingFileAction.OverwriteSilently);
                 zip.ExtractSelectedEntries("name = image.png", null, target_path, ExtractExistingFileAction.OverwriteSilently);
 
-                zip.ExtractSelectedEntries("name = quest.ini", null, target_path, ExtractExistingFileAction.OverwriteSilently);
-                zip.ExtractSelectedEntries("name = Localization.*.txt", null, target_path, ExtractExistingFileAction.OverwriteSilently);
+                // search in subfolder (* before filename is required for Android)
+                zip.ExtractSelectedEntries("name = *quest.ini", null, target_path, ExtractExistingFileAction.OverwriteSilently);
+                zip.ExtractSelectedEntries("name = *Localization.*.txt", null, target_path, ExtractExistingFileAction.OverwriteSilently);
             }
 
             zip.Dispose();
