@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using Assets.Scripts.Content;
 using Assets.Scripts.UI;
@@ -1564,7 +1564,7 @@ public class Quest
             }
             else if (qUI.imageName.Length > 0)
             {
-                newTex = ContentData.FileToTexture(Path.GetDirectoryName(game.quest.qd.questPath) + Path.DirectorySeparatorChar + qUI.imageName);
+                newTex = ContentData.FileToTexture(Path.Combine(Path.GetDirectoryName(game.quest.qd.questPath), qUI.imageName));
             }
 
             // Create object
