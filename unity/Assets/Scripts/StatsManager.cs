@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Collections;
@@ -115,7 +115,7 @@ public class StatsManager
         Quest quest = game.quest;
 
         // quest filename is the unique id
-        gameStats.scenario_name = Path.GetFileName(game.quest.questPath);
+        gameStats.scenario_name = Path.GetFileName(game.quest.originalPath);
 
         // language is required to see the quality of translations
         gameStats.language_selected = game.currentLang;
